@@ -43,7 +43,7 @@ class Application extends BaseApplication
 
     protected static self $INSTANCE;
 
-    public static function main(string $basePath = null): static
+    public static function create(string $basePath = null): static
     {
         if (! isset(self::$INSTANCE)) {
             if (! isset($basePath)) {
