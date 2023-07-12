@@ -23,8 +23,8 @@
         "chat": "https://github.com/orgs/sikessem/discussions"
     },
     "require": {
-        "php": "^8.1||^8.2",
-        "laravel/framework": "^10.12"
+        "php": "*",
+        "laravel/framework": "^10.15"
     },
     "require-dev": {
         "sikessem/devtools": "^0.0.0"
