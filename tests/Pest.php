@@ -11,7 +11,7 @@
 |
 */
 
-// uses(Tests\TestCase::class)->in('Feature');
+uses(Sikessem\Tests\TestCase::class)->in('Unit');
 
 /*
 |--------------------------------------------------------------------------

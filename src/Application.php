@@ -69,9 +69,9 @@ class Application extends BaseApplication
         $this->runningInConsole() ? $this->handleCommand() : $this->handleRequest();
     }
 
-    protected function handleCommand(): void
+    public function handleCommand(): void
     {
-        $kernel = $this->make(ConsoleKernel::class);
+        $kernel = $this->makeConsoleKernel();
 
         $status = $kernel->handle(
             $input = new ArgvInput,
@@ -83,14 +83,29 @@ class Application extends BaseApplication
         exit($status);
     }
 
-    protected function handleRequest(): void
+    public function handleRequest(): void
     {
-        $kernel = $this->make(HttpKernel::class);
+        $kernel = $this->makeHttpKernel();
 
         $response = $kernel->handle(
             $request = Request::capture()
         )->send();
 
         $kernel->terminate($request, $response);
+    }
+
+    public function makeKernel(): ConsoleKernel|HttpKernel
+    {
+        return $this->runningInConsole() ? $this->makeConsoleKernel() : $this->makeHttpKernel();
+    }
+
+    public function makeConsoleKernel(): ConsoleKernel
+    {
+        return $this->make(ConsoleKernel::class);
+    }
+
+    public function makeHttpKernel(): HttpKernel
+    {
+        return $this->make(HttpKernel::class);
     }
 }
