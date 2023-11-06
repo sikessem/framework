@@ -11,36 +11,6 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Application extends BaseApplication
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected $namespace = 'App\\';
-
-    /**
-     * {@inheritDoc}
-     */
-    public function path($path = '')
-    {
-        if (! isset($this->appPath)) {
-            $this->appPath = $this->rootDir().'src';
-        }
-
-        return parent::path($path);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function resourcePath($path = '')
-    {
-        return $this->rootDir().'res'.($path != '' ? DIRECTORY_SEPARATOR.$path : '');
-    }
-
-    public function rootDir(): string
-    {
-        return $this->basePath.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR;
-    }
-
     protected static self $INSTANCE;
 
     public static function create(string $basePath = null): static
@@ -107,5 +77,67 @@ class Application extends BaseApplication
     public function makeHttpKernel(): HttpKernel
     {
         return $this->make(HttpKernel::class);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected $namespace = 'App\\';
+
+    /**
+     * {@inheritDoc}
+     */
+    public function path($path = '')
+    {
+        if (! isset($this->appPath) && is_dir($this->rootDir('src'))) {
+            $this->appPath = $this->rootDir('src');
+        }
+
+        return parent::path($path);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resourcePath($path = '')
+    {
+        if (is_dir($this->rootDir('res'))) {
+            return $this->rootDir('res').($path != '' ? DIRECTORY_SEPARATOR.$path : '');
+        }
+
+        return parent::resourcePath($path);
+    }
+
+    /**
+     * Get the path to the templates directory.
+     */
+    public function templatePath(string $path = ''): string
+    {
+        if (is_dir($this->rootDir('tpl'))) {
+            return $this->rootDir('tpl').($path != '' ? DIRECTORY_SEPARATOR.$path : '');
+        }
+
+        return $this->joinPaths($this->basePath('templates'), $path);
+    }
+
+    public function rootDir(string $path = ''): string
+    {
+        return $this->basePath.DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.$path;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function viewPath($path = '')
+    {
+        foreach ($this['config']->get('view.paths', [$this->templatePath()]) as $viewPath) {
+            if (is_dir($viewPath)) {
+                $viewPath = rtrim($viewPath, DIRECTORY_SEPARATOR);
+
+                return $this->joinPaths($viewPath, $path);
+            }
+        }
+
+        return $this->templatePath($path);
     }
 }
