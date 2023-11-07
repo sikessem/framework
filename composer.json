@@ -40,12 +40,30 @@
         }
     },
     "scripts": {
+        "analyse": "phpstan analyse --ansi --memory-limit=-1 --debug",
+        "check": "pint --test -v",
+        "ci": [
+            "@validate",
+            "@check",
+            "@analyse",
+            "@inspect",
+            "@review",
+            "@test"
+        ],
+        "fix": [
+            "@refactor",
+            "@sanitize",
+            "@format",
+            "@lint"
+        ],
+        "format": "psalter --issues=all",
+        "inspect": "psalm --no-diff",
         "lint": "pint -v",
         "test": "pest --colors=always",
-        "ci": [
-            "@lint",
-            "@test"
-        ]
+        "review": "rector --dry-run --debug",
+        "refactor": "rector",
+        "sanitize": "phpinsights fix",
+        "validate": "phpinsights analyse"
     },
     "extra": {
         "branch-alias": {
