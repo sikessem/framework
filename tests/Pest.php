@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
 |--------------------------------------------------------------------------
 | Test Case
@@ -11,7 +13,7 @@
 |
 */
 
-uses(Sikessem\Tests\TestCase::class)->in('Unit');
+// uses(Sikessem\Tests\TestCase::class)->in('Unit');
 
 /*
 |--------------------------------------------------------------------------
