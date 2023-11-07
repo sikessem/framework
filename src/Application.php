@@ -4,36 +4,41 @@ declare(strict_types=1);
 
 namespace Sikessem;
 
+use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\Application as BaseApplication;
 use Illuminate\Http\Request;
+use Sikessem\Contracts\IsApplication;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
-class Application extends BaseApplication
+class Application extends BaseApplication implements IsApplication
 {
     protected static self $INSTANCE;
 
     /**
-     * {@inheritDoc}
+     * @var string
      */
     protected $namespace = 'App\\';
 
-    public static function create(string $basePath = null): static
+    public static function create(string $basePath = null): IsApplication
     {
         if (! isset(self::$INSTANCE)) {
-            if (! isset($basePath)) {
-                $basePath = dirname(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0]['file']);
+            if (! $basePath) {
+                $basePath = backtrace(limit: 1)->getDirectory();
             }
-            self::$INSTANCE = new static($basePath);
-            self::$INSTANCE->useLangPath(value(function () {
-                if (is_dir($directory = self::$INSTANCE->resourcePath('locales'))) {
+            self::$INSTANCE = new self($basePath);
+            /** @var string */
+            $langPath = value(static function (): string {
+                $directory = self::$INSTANCE->resourcePath('locales');
+                if (is_dir($directory)) {
                     return $directory;
                 }
 
                 return self::$INSTANCE->basePath('locales');
-            }));
+            });
+            self::$INSTANCE->useLangPath($langPath);
         }
 
         return self::$INSTANCE;
@@ -51,8 +56,8 @@ class Application extends BaseApplication
         $kernel = $this->makeConsoleKernel();
 
         $status = $kernel->handle(
-            $input = new ArgvInput,
-            new ConsoleOutput
+            $input = new ArgvInput(),
+            new ConsoleOutput()
         );
 
         $kernel->terminate($input, $status);
@@ -78,12 +83,18 @@ class Application extends BaseApplication
 
     public function makeConsoleKernel(): ConsoleKernel
     {
-        return $this->make(ConsoleKernel::class);
+        /** @var ConsoleKernel */
+        $kernel = $this->make(ConsoleKernel::class);
+
+        return $kernel;
     }
 
     public function makeHttpKernel(): HttpKernel
     {
-        return $this->make(HttpKernel::class);
+        /** @var HttpKernel */
+        $kernel = $this->make(HttpKernel::class);
+
+        return $kernel;
     }
 
     /**
@@ -91,7 +102,7 @@ class Application extends BaseApplication
      */
     public function path($path = '')
     {
-        if (! isset($this->appPath) && is_dir($this->rootDir('src'))) {
+        if (empty($this->appPath) && is_dir($this->rootDir('src'))) {
             $this->appPath = $this->rootDir('src');
         }
 
@@ -104,7 +115,7 @@ class Application extends BaseApplication
     public function resourcePath($path = '')
     {
         if (is_dir($this->rootDir('res'))) {
-            return $this->rootDir('res').($path != '' ? DIRECTORY_SEPARATOR.$path : '');
+            return $this->rootDir('res').($path !== '' ? DIRECTORY_SEPARATOR.$path : '');
         }
 
         return parent::resourcePath($path);
@@ -116,7 +127,7 @@ class Application extends BaseApplication
     public function templatePath(string $path = ''): string
     {
         if (is_dir($this->rootDir('tpl'))) {
-            return $this->rootDir('tpl').($path != '' ? DIRECTORY_SEPARATOR.$path : '');
+            return $this->rootDir('tpl').($path !== '' ? DIRECTORY_SEPARATOR.$path : '');
         }
 
         return $this->joinPaths($this->basePath('templates'), $path);
@@ -132,7 +143,11 @@ class Application extends BaseApplication
      */
     public function viewPath($path = '')
     {
-        foreach ($this['config']->get('view.paths', [$this->templatePath()]) as $viewPath) {
+        /** @var ConfigContract */
+        $config = $this['config'];
+        /** @var string[] */
+        $viewPaths = $config->get('view.paths', [$this->templatePath()]);
+        foreach ($viewPaths as $viewPath) {
             if (is_dir($viewPath)) {
                 $viewPath = rtrim($viewPath, DIRECTORY_SEPARATOR);
 
