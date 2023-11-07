@@ -39,7 +39,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: curl, dom, gd, intl, mbstring, openssl, tokenizer, zip
           ini-values: error_reporting=E_ALL
-          tools: composer:v2, php-cs-fixer, phpunit, vimeo/psalm
+          tools: composer:v2, php-cs-fixer, phpunit
           coverage: pcov
 
       - name: 🍱 Install Composer dependencies
@@ -49,9 +49,7 @@ jobs:
         run: composer lint
 
       - name: ⚗️ Run static analysis
-        run: |
-          composer analyse
-          composer inspect
+        run: composer analyse
 
       - name: 🧪 Run unit tests
         run: composer test

@@ -46,17 +46,13 @@
         "ci": [
             "@check",
             "@analyse",
-            "@inspect",
             "@review",
             "@test"
         ],
         "fix": [
             "@refactor",
-            "@format",
             "@lint"
         ],
-        "format": "psalter --issues=all",
-        "inspect": "psalm --no-diff",
         "lint": "pint -v",
         "test": "pest --colors=always",
         "review": "rector --dry-run --debug",
