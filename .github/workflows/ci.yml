@@ -43,7 +43,9 @@ jobs:
           coverage: pcov
 
       - name: 🍱 Install Composer dependencies
-        run: composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
+        run: |
+          composer install -q --no-ansi --no-cache --no-interaction --no-scripts --no-progress --prefer-dist
+          composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
 
       - name: ✅ Check code lint
         run: composer lint
