@@ -24,7 +24,8 @@
     },
     "require": {
         "php": "^8.1||^8.2",
-        "laravel/framework": "^10.30"
+        "laravel/framework": "^10.30",
+        "sikessem/debugger": "^0.0.0"
     },
     "require-dev": {
         "sikessem/laravel-devtools": "^0.8.0"
