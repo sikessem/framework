@@ -15,6 +15,11 @@ class Application extends BaseApplication
 {
     protected static self $INSTANCE;
 
+    /**
+     * {@inheritDoc}
+     */
+    protected $namespace = 'App\\';
+
     public static function create(string $basePath = null): static
     {
         if (! isset(self::$INSTANCE)) {
@@ -80,11 +85,6 @@ class Application extends BaseApplication
     {
         return $this->make(HttpKernel::class);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected $namespace = 'App\\';
 
     /**
      * {@inheritDoc}
