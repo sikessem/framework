@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Sikessem;
 
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
