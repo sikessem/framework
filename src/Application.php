@@ -31,12 +31,15 @@ class Application extends BaseApplication implements IsApplication
             self::$INSTANCE = new self($basePath);
             /** @var string */
             $langPath = value(static function (): string {
-                $directory = self::$INSTANCE->resourcePath('locales');
+                $directory = is_dir(self::$INSTANCE->resourcePath('locales'))
+                ? self::$INSTANCE->resourcePath('locales')
+                : self::$INSTANCE->resourcePath('i18n');
+
                 if (is_dir($directory)) {
                     return $directory;
                 }
 
-                return self::$INSTANCE->basePath('locales');
+                return self::$INSTANCE->basePath('lang');
             });
             self::$INSTANCE->useLangPath($langPath);
         }
