@@ -13,7 +13,7 @@ jobs:
       fail-fast: true
       matrix:
         os: [ubuntu-latest]
-        php: [8.1, 8.2]
+        php: [8.1, 8.2, 8.3]
         dependencies: [lowest, highest]
         experimental: [false]
     name: 👷 CI PHP-${{ matrix.php }} ${{ matrix.dependencies }} on ${{ matrix.os }}
@@ -45,7 +45,7 @@ jobs:
       - name: 🍱 Install Composer dependencies
         run: |
           composer install -q --no-ansi --no-cache --no-interaction --no-scripts --no-progress --prefer-dist
-          composer update --${{ matrix.dependency-version }} --no-interaction --prefer-dist
+          composer update --${{ matrix.dependencies }} --no-interaction --prefer-dist
 
       - name: ✅ Check code lint
         run: composer lint

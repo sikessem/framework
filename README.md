@@ -66,7 +66,7 @@ This framework is a Laravel customization for the [sikessem/skeleton](https://pa
 
 ## 📋 Requirements
 
-> - **Requires [PHP 8.1+](https://php.net/releases/)** (at least 8.1.19 recommended to avoid potential bugs).
+> - **Requires [PHP 8.1+](https://php.net/releases/)** (at least 8.1.27 recommended to avoid potential bugs).
 > - **Requires [Composer v2+](https://getcomposer.org/)** to manage PHP dependencies.
 
 ## ⚡️ Installation
