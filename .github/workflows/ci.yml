@@ -48,7 +48,7 @@ jobs:
           composer update --${{ matrix.dependencies }} --no-interaction --prefer-dist
 
       - name: ✅ Check code lint
-        run: composer lint
+        run: composer check
 
       - name: ⚗️ Run static analysis
         run: composer analyse
