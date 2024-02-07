@@ -18,8 +18,6 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 interface IsApplication extends ApplicationContract, CachesConfiguration, CachesRoutes, HttpKernelInterface
 {
-    public static function create(string $basePath = null): self;
-
     public function run(): void;
 
     public function handleCommand(): void;

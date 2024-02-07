@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Sikessem;
 
+use Closure;
 use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Console\Kernel as ConsoleKernel;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
@@ -15,36 +16,31 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Application extends BaseApplication implements IsApplication
 {
-    protected static self $INSTANCE;
-
     /**
      * @var string
      */
     protected $namespace = 'App\\';
 
-    public static function create(string $basePath = null): IsApplication
+    public function __construct(?string $basePath = null)
     {
-        if (! isset(self::$INSTANCE)) {
-            if (! $basePath) {
-                $basePath = backtrace(limit: 1)->getDirectory();
-            }
-            self::$INSTANCE = new self($basePath);
-            /** @var string */
-            $langPath = value(static function (): string {
-                $directory = is_dir(self::$INSTANCE->resourcePath('locales'))
-                ? self::$INSTANCE->resourcePath('locales')
-                : self::$INSTANCE->resourcePath('i18n');
-
-                if (is_dir($directory)) {
-                    return $directory;
-                }
-
-                return self::$INSTANCE->basePath('lang');
-            });
-            self::$INSTANCE->useLangPath($langPath);
+        if (! $basePath) {
+            $basePath = backtrace(limit: 1)->getDirectory();
         }
 
-        return self::$INSTANCE;
+        parent::__construct($basePath);
+
+        /** @var string */
+        $langPath = value(Closure::bind(function (): string {
+            $directory = is_dir($this->resourcePath('locales'))
+            ? $this->resourcePath('locales')
+            : $this->resourcePath('i18n');
+            if (is_dir($directory)) {
+                return $directory;
+            }
+
+            return $this->basePath('lang');
+        }, $this));
+        $this->useLangPath($langPath);
     }
 
     public function run(): void
