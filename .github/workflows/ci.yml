@@ -45,7 +45,7 @@ jobs:
       - name: 🍱 Install Composer dependencies
         run: |
           composer install -q --no-ansi --no-cache --no-interaction --no-scripts --no-progress --prefer-dist
-          composer update --prefer-${{ matrix.dependencies }} --no-interaction
+          composer update --prefer-${{ matrix.dependencies }} --prefer-dist --no-interaction --no-progress
 
       - name: ✅ Check code lint
         run: composer check
